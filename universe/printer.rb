@@ -2,8 +2,8 @@
 module Universe 
   class Printer
     DRAW_MAP = {
-      1 => 'X',
-      0 => 'O',
+      1 => 'o',
+      0 => ' ',
     }    
     def self.call population
         population.each do |row|

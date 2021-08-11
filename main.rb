@@ -26,6 +26,8 @@ require_relative './cell_checker'
 require_relative './helpers'
 require_relative './universe/size_upper'
 require_relative './universe/printer'
+require_relative './universe/creator'
+
 class Game
 
   def self.next_generation! population
@@ -64,7 +66,9 @@ end
 end
 
 clear_output()
-generation = Universe::SizeUpper.call Universe::SizeUpper.call(array)
+initial_universe = Universe::Creator.call
+generation = initial_universe
+#generation = Universe::SizeUpper.call Universe::SizeUpper.call(array)
 
 Universe::Printer.call generation
 sleep(1)
@@ -77,9 +81,11 @@ while universe_alive do
   next_generation = Game.next_generation! generation
   
   Universe::Printer.call generation
-  puts generations_cnt
+  #puts generations_cnt
   if next_generation == generation
-    universe_alive = false
+    # uncomment if do not want infinitive creations
+    #universe_alive = false
+    generation = Universe::Creator.call
   else
     generation = next_generation
     generations_cnt += 1
