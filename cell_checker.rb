@@ -1,9 +1,5 @@
-array = [
-  [1,1,0,],
-  [1,1,0,],
-  [1,1,0,]
-]
 
+=begin
 class UniverseUpper
   def self.call array
     zeros_row = array.first.size.times.inject([]) do |res, _|
@@ -18,6 +14,7 @@ class UniverseUpper
     array
   end
 end
+=end
 
 class CellChecker
   def initialize population
@@ -112,24 +109,6 @@ class CellChecker
     end
   end
 end
-
-class UniversePrinter
-  DRAW_MAP = {
-    1 => 'X',
-    0 => 'O',
-  }    
-  def self.call population
-      puts "-----------------------------"
-      population.each do |row|
-        row.each do |item|
-          print "#{DRAW_MAP[item]} "
-        end
-        puts ""
-      end
-      puts "-----------------------------"
-  end
-end
-
 
 
 #class CellChecker

@@ -18,7 +18,9 @@ array = [
 
 require_relative './cell_checker'
 require_relative './helpers'
-class Universe
+require_relative './universe/size_upper'
+require_relative './universe/printer'
+class Game
 
   def self.next_generation! population
     @population = population
@@ -34,7 +36,8 @@ class Universe
 
 end
 
-class UniverseUpper
+module Universe
+  class SizeUpper
   def self.need_more_space? population
     #p population
     border = population.size - 1
@@ -52,21 +55,22 @@ class UniverseUpper
     return false
   end
 end
+end
 
 clear_output()
-generation = UniverseUpper.call UniverseUpper.call(array)
+generation = Universe::SizeUpper.call Universe::SizeUpper.call(array)
 
-UniversePrinter.call generation
+Universe::Printer.call generation
 sleep(1)
 clear_output()
 
 generations_cnt = 0
 universe_alive = true
 while universe_alive do
-  generation = UniverseUpper.call(generation) if UniverseUpper.need_more_space?(generation)
-  next_generation = Universe.next_generation! generation
+  generation = Universe::SizeUpper.call(generation) if Universe::SizeUpper.need_more_space?(generation)
+  next_generation = Game.next_generation! generation
   
-  UniversePrinter.call generation
+  Universe::Printer.call generation
   puts generations_cnt
   if next_generation == generation
     universe_alive = false
