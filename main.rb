@@ -16,6 +16,12 @@ array = [
 ]
 
 
+array = [
+  [1,1,1],
+  [1,1,0],
+  [0,0,0]
+]
+
 require_relative './cell_checker'
 require_relative './helpers'
 require_relative './universe/size_upper'
