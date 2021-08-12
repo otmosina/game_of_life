@@ -1,8 +1,9 @@
 # frozen_string_literal: true
+require 'colorize'
 module Universe 
   class Printer
     DRAW_MAP = {
-      1 => 'o',
+      1 => 'o'.green,
       0 => ' ',
     }    
     def self.call population
