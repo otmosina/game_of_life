@@ -22,11 +22,11 @@ array = [
   [0,0,0]
 ]
 
-require_relative './cell_checker'
 require_relative './helpers'
 require_relative './universe/size_upper'
 require_relative './universe/printer'
 require_relative './universe/creator'
+require_relative './universe/cell_checker'
 
 class Game
 
@@ -36,7 +36,7 @@ class Game
     @population.each_with_index do |row, i|
       next_generation << []
       row.each_with_index do |cell, j|
-        next_generation.last << CellChecker.new(@population).call(cell, i, j)
+        next_generation.last << Universe::CellChecker.new(@population).call(cell, i, j)
       end
     end
     next_generation
