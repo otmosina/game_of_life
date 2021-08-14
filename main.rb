@@ -29,8 +29,15 @@ require_relative './universe/creator'
 require_relative './universe/cell_checker'
 
 class Game
-  def self.next_generation! population
+  attr_accessor :population
+
+  def initialize(population:)
     @population = population
+    @generations_cnt = 0
+    @universe_alive = true
+  end
+
+  def get_next_generation
     next_generation = []
     @population.each_with_index do |row, i|
       next_generation << []
@@ -41,38 +48,34 @@ class Game
     next_generation
   end
 
+  def loop
+    while @universe_alive do
+      @population = Universe::SizeUpper.call(@population) if Universe::SizeUpper.need_more_space?(@population)
+      Universe::Printer.call population
+      next_generation = self.get_next_generation
+      if @population == next_generation
+        @universe_alive = false
+      else
+        @population = next_generation
+        @generations_cnt += 1
+        sleep(0.1)
+        clear_output()    
+      end
+    end
+  end
+
 end
 
+g = Game.new(population: Universe::Creator.call)
 clear_output()
-initial_universe = Universe::Creator.call
-generation = initial_universe
-#generation = Universe::SizeUpper.call Universe::SizeUpper.call(array)
 
-Universe::Printer.call generation
+Universe::Printer.call g.population
 sleep(1)
 clear_output()
 
-generations_cnt = 0
-universe_alive = true
-while universe_alive do
-  generation = Universe::SizeUpper.call(generation) if Universe::SizeUpper.need_more_space?(generation)
-  next_generation = Game.next_generation! generation
-  
-  Universe::Printer.call generation
-  #puts generations_cnt
-  if next_generation == generation
-    # uncomment if do not want infinitive creations
-    universe_alive = false
-    #generation = Universe::Creator.call
-  else
-    generation = next_generation
-    generations_cnt += 1
-    
-    sleep(0.1)
-    clear_output()    
-  end
-  #option = gets
-end
+g.loop
+
+
 sleep(1)
 command = nil
 while command&.chomp != 'exit' do
