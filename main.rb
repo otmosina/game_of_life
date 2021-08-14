@@ -29,7 +29,6 @@ require_relative './universe/creator'
 require_relative './universe/cell_checker'
 
 class Game
-
   def self.next_generation! population
     @population = population
     next_generation = []
@@ -42,27 +41,6 @@ class Game
     next_generation
   end
 
-end
-
-module Universe
-  class SizeUpper
-  def self.need_more_space? population
-    #p population
-    border = population.size - 1
-    i = 0 
-    while i <= border do
-      j = 0
-      while j <= border do
-        if ( i == 0 || i == border || j == 0 || j == border ) && population[i][j] == 1
-          return true
-        end
-        j += 1
-      end
-      i += 1
-    end
-    return false
-  end
-end
 end
 
 clear_output()
@@ -84,8 +62,8 @@ while universe_alive do
   #puts generations_cnt
   if next_generation == generation
     # uncomment if do not want infinitive creations
-    #universe_alive = false
-    generation = Universe::Creator.call
+    universe_alive = false
+    #generation = Universe::Creator.call
   else
     generation = next_generation
     generations_cnt += 1
@@ -93,8 +71,12 @@ while universe_alive do
     sleep(0.1)
     clear_output()    
   end
-
+  #option = gets
 end
-
-sleep(3)
+sleep(1)
+command = nil
+while command&.chomp != 'exit' do
+  puts "type `exit` to stop"
+  command = gets  
+end
 
