@@ -16,6 +16,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.2)
+    ruby-prof (1.4.3)
 
 PLATFORMS
   x86_64-darwin-20
@@ -23,6 +24,7 @@ PLATFORMS
 DEPENDENCIES
   colorize
   rspec
+  ruby-prof
 
 RUBY VERSION
    ruby 2.7.3p183
