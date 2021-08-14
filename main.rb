@@ -51,27 +51,24 @@ class Game
   def loop
     while @universe_alive do
       @population = Universe::SizeUpper.call(@population) if Universe::SizeUpper.need_more_space?(@population)
-      Universe::Printer.call population
       next_generation = self.get_next_generation
       if @population == next_generation
         @universe_alive = false
       else
+        Universe::Printer.call population
         @population = next_generation
         @generations_cnt += 1
-        sleep(0.1)
-        clear_output()    
       end
     end
   end
 
 end
 
-g = Game.new(population: Universe::Creator.call)
 clear_output()
 
+g = Game.new(population: Universe::Creator.call)
+
 Universe::Printer.call g.population
-sleep(1)
-clear_output()
 
 g.loop
 
