@@ -4,13 +4,32 @@ require_relative '../universe/printer'
 
 RSpec.describe Game do
   describe 'call' do
+    let(:saver) { Universe::Saver.new }
+    let(:population) do
+      [
+        [1,0,0],
+        [1,1,0],
+        [1,1,0]
+      ]      
+    end
 
-    subject(:upper) {described_class.call(array)}
-    #before do
-    #  Universe::Printer.call(upper)
-    #end
-    xit 'be true' do
-      expect(upper.first.size).to eq(array.size + 2)
+    let(:last_generation) do
+      [
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0]
+      ]
+    end    
+    subject(:game) {described_class.new(population: population, saver: saver)}
+    before do
+      game.loop
+    end
+    it 'be true' do
+      expect(saver.last).to eq(last_generation)
     end
   end
 end
