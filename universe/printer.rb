@@ -7,6 +7,7 @@ module Universe
       0 => ' ',
     }    
     def self.call population
+      clear_output()
       population.each do |row|
         row.each do |item|
           print "#{DRAW_MAP[item]} "
@@ -14,7 +15,6 @@ module Universe
         puts ""
       end
       sleep(0.1)
-      clear_output()
     end
   end
 end
