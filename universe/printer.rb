@@ -14,7 +14,7 @@ module Universe
         end
         puts ""
       end
-      sleep(0.1)
+      sleep(0.08)
     end
   end
 end
