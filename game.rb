@@ -19,7 +19,7 @@ class Game
     while @universe_alive do
       @population = Universe::SizeUpper.call(@population) if Universe::SizeUpper.need_more_space?(@population)
       next_generation = self.get_next_generation
-      if @population == next_generation
+      if detect_infinity(next_generation)#@population == next_generation
         @universe_alive = false
       else
         printer.call population
@@ -29,7 +29,11 @@ class Game
     end
   end
 
-  private 
+  private
+  
+  def detect_infinity new_generation
+    saver.was_in_history new_generation
+  end
   
   def get_next_generation
     next_generation = []

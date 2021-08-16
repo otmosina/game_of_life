@@ -22,6 +22,10 @@ module Universe
       File.open(filename,'w').write(history.to_json)
     end
 
+    def was_in_history generation
+      history.index(generation)
+    end
+
     private 
 
     def filename
