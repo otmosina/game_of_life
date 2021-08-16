@@ -5,3 +5,25 @@ def clear_output
      system('clear')
   end
 end
+
+def cli_interface
+  require 'timeout'
+  command = nil
+  while command != 'exit' do
+    puts "type `exit` to stop"
+    puts "type `new` to run new evolving"
+    
+    begin
+      Timeout::timeout 2 do
+        command = gets&.chomp
+      end
+    rescue Timeout::Error
+      command = 'new'
+    end
+  
+    
+    if command == 'new'
+      yield
+    end
+  end
+end
