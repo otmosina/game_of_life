@@ -12,7 +12,6 @@ class Game
     @saver = saver
     @printer = printer
     @population = population
-    @generations_cnt = 0
     @universe_alive = true
   end
 
@@ -25,13 +24,12 @@ class Game
       else
         printer.call population
         @population = next_generation
-        @generations_cnt += 1
       end
       saver.call @population
     end
   end
 
-  private
+  private 
   
   def get_next_generation
     next_generation = []
