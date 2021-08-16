@@ -20,10 +20,7 @@ def cli_interface
     rescue Timeout::Error
       command = 'new'
     end
-  
-    
-    if command == 'new'
-      yield
-    end
+    yield(command)    
+
   end
 end

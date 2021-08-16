@@ -40,9 +40,11 @@ puts "generations cnt #{saver.generations_cnt}"
 saver.store
 
 
-cli_interface do 
-  g = Game.new(population: Universe::Creator.call, printer: Universe::Printer, saver: saver)
-  g.loop
+cli_interface do |command| 
+  if command == 'new'
+    g = Game.new(population: Universe::Creator.call, printer: Universe::Printer, saver: saver)
+    g.loop
+  end
 end
 
 
