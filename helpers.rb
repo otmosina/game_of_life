@@ -9,12 +9,13 @@ end
 def cli_interface
   require 'timeout'
   command = nil
+  timeout = 60
   while command != 'exit' do
     puts "type `exit` to stop"
     puts "type `new` to run new evolving"
     
     begin
-      Timeout::timeout 60 do
+      Timeout::timeout timeout do
         command = gets&.chomp
       end
     rescue Timeout::Error
