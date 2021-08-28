@@ -14,7 +14,7 @@ def cli_interface
     puts "type `new` to run new evolving"
     
     begin
-      Timeout::timeout 2 do
+      Timeout::timeout 60 do
         command = gets&.chomp
       end
     rescue Timeout::Error

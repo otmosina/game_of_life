@@ -30,19 +30,31 @@ population = [
 ]
 
 require_relative './game.rb'
-
+#GC.disable
 clear_output()
 population = Universe::Creator.call
 saver = Universe::Saver.new
-g = Game.new(population: population, printer: Universe::Printer, saver: saver)
+printer = Universe::Printer.new
+
+printer.configure do 
+  puts (`ps -o rss= -p #{Process.pid}`.to_i / 1024).to_s << ' mb'
+end
+g = Game.new(population: population, printer: printer, saver: saver)
 g.loop
+
 puts "generations cnt #{saver.generations_cnt}"
 saver.store
 
 
 cli_interface do |command| 
   if command == 'new'
-    g = Game.new(population: Universe::Creator.call, printer: Universe::Printer, saver: saver)
+    printer = Universe::Printer.new
+
+    printer.configure do 
+      puts (`ps -o rss= -p #{Process.pid}`.to_i / 1024).to_s << ' mb'
+    end
+
+    g = Game.new(population: Universe::Creator.call, printer: printer, saver: saver)
     g.loop
   end
 end

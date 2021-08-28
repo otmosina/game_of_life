@@ -13,13 +13,17 @@ class Game
     @printer = printer
     @population = population
     @universe_alive = true
+    10.times do
+      @population = Universe::SizeUpper.call(@population)
+    end
   end
 
   def loop
     while @universe_alive do
-      @population = Universe::SizeUpper.call(@population) if Universe::SizeUpper.need_more_space?(@population)
+      # this line for infinity universe
+      #@population = Universe::SizeUpper.call(@population) if Universe::SizeUpper.need_more_space?(@population)
       next_generation = self.get_next_generation
-      if detect_infinity(next_generation)#@population == next_generation
+      if detect_infinity(next_generation)
         @universe_alive = false
       else
         printer.call population
@@ -27,11 +31,13 @@ class Game
       end
       saver.call @population
     end
+    
   end
 
   private
   
   def detect_infinity new_generation
+    #return @population == new_generation
     saver.was_in_history new_generation
   end
   

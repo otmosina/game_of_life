@@ -5,8 +5,11 @@ module Universe
     DRAW_MAP = {
       1 => 'o'.green,
       0 => ' ',
-    }    
-    def self.call population
+    }
+    def configure &block
+      @additional_prints = block
+    end  
+    def call population
       clear_output()
       population.each do |row|
         row.each do |item|
@@ -14,6 +17,7 @@ module Universe
         end
         puts ""
       end
+      @additional_prints.call
       sleep(0.08)
     end
   end
