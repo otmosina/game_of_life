@@ -38,6 +38,7 @@ printer = Universe::Printer.new
 
 printer.configure do 
   puts (`ps -o rss= -p #{Process.pid}`.to_i / 1024).to_s << ' mb'
+  puts saver.generations_cnt.to_s << " generations"
 end
 g = Game.new(population: population, printer: printer, saver: saver)
 g.loop
@@ -52,6 +53,7 @@ cli_interface do |command|
 
     printer.configure do 
       puts (`ps -o rss= -p #{Process.pid}`.to_i / 1024).to_s << ' mb'
+      puts saver.generations_cnt.to_s << " generations"
     end
 
     g = Game.new(population: Universe::Creator.call, printer: printer, saver: saver)
