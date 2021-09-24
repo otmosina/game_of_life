@@ -58,6 +58,7 @@ function Circle(x, y, radius, dx, dy) {
     
     c.strokeStyle = `rgba(${this.random_r}, ${this.random_g}, ${this.random_b}, 0.99)`
     c.stroke();
+    c.fill()
 
   }
 
@@ -111,8 +112,7 @@ function animate() {
       circles[i].radius = circles[i].radius + getRandomInt(-1,2)
       circles[i].dx = circles[i].dx + getRandomInt(-1,2)
       circles[i].dy = circles[i].dy + getRandomInt(-1,2)
-    }    
-     
+    }      
   }
 }
 
