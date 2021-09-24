@@ -25,14 +25,66 @@ var c = canvas.getContext('2d');
 // c.lineTo(300, 100);
 // c.stroke();
 
-for ( var i = 0; i < 2500; i++) {
-  var x =  getRandomInt(0, canvas_width);//Math.random() * window.innerWidth;
-  var y =  getRandomInt(0, canvas_height);//Math.random() * window.innerHeight;
-  c.beginPath();
-  c.arc(x, y, 3, 0, Math.PI * 2, false);
-  var random_r = getRandomInt(0, 255)
-  var random_g = getRandomInt(0, 255)
-  var random_b = getRandomInt(0, 255)
-  c.strokeStyle = `rgba(${random_r}, ${random_g}, ${random_b}, 0.99)`
-  c.stroke();
+// for ( var i = 0; i < 2500; i++) {
+//   var x =  getRandomInt(0, canvas_width);//Math.random() * window.innerWidth;
+//   var y =  getRandomInt(0, canvas_height);//Math.random() * window.innerHeight;
+//   c.beginPath();
+//   c.arc(x, y, 3, 0, Math.PI * 2, false);
+//   var random_r = getRandomInt(0, 255)
+//   var random_g = getRandomInt(0, 255)
+//   var random_b = getRandomInt(0, 255)
+//   c.strokeStyle = `rgba(${random_r}, ${random_g}, ${random_b}, 0.99)`
+//   c.stroke();
+// }
+
+function Circle(x, y, radius, dx, dy) {
+  this.x = x;
+  this.y = y;
+  this.radius = radius;
+  this.dx = dx;
+  this.dy = dy;
+
+  this.draw = function() {
+    c.beginPath();
+    c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+    // var random_r = getRandomInt(0, 255)
+    // var random_g = getRandomInt(0, 255)
+    // var random_b = getRandomInt(0, 255)
+    // c.strokeStyle = `rgba(${random_r}, ${random_g}, ${random_b}, 0.99)`
+    c.stroke();
+    console.log("draw")
+  }
+
+  this.update = function(){
+
+    if ( this.x - this.radius < 0 ||  this.x + this.radius > canvas_width) {
+      this.dx = -this.dx
+    }
+    if ( this.y - this.radius < 0 ||  this.y + this.radius > canvas_height) {
+      this.dy = -this.dy
+    }
+    this.x += this.dx
+    this.y += this.dy
+    this.draw()
+  }
+  
 }
+
+
+var x_direction = 'r'
+var speed = 5;
+var radius = 20;
+var dx = 4;
+var dy = 4;
+
+var x = getRandomInt(0+radius, canvas_width-radius);//200;
+var y = getRandomInt(0+radius, canvas_height-radius);//200;
+
+var circle = new Circle(x, y, radius, dx, dy)
+function animate() {
+  requestAnimationFrame(animate);
+  c.clearRect(0, 0, canvas_width, canvas_height)
+  circle.update()
+}
+
+animate()
