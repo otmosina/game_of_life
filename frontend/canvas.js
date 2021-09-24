@@ -44,15 +44,21 @@ function Circle(x, y, radius, dx, dy) {
   this.dx = dx;
   this.dy = dy;
 
+  this.random_r = getRandomInt(0, 255);
+  this.random_g = getRandomInt(0, 255);
+  this.random_b = getRandomInt(0, 255);  
+
+
+
   this.draw = function() {
     c.beginPath();
     c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-    // var random_r = getRandomInt(0, 255)
-    // var random_g = getRandomInt(0, 255)
-    // var random_b = getRandomInt(0, 255)
-    // c.strokeStyle = `rgba(${random_r}, ${random_g}, ${random_b}, 0.99)`
+    
+    
+    
+    c.strokeStyle = `rgba(${this.random_r}, ${this.random_g}, ${this.random_b}, 0.99)`
     c.stroke();
-    console.log("draw")
+
   }
 
   this.update = function(){
@@ -73,18 +79,41 @@ function Circle(x, y, radius, dx, dy) {
 
 var x_direction = 'r'
 var speed = 5;
-var radius = 20;
+var radius = 5;
 var dx = 4;
 var dy = 4;
-
 var x = getRandomInt(0+radius, canvas_width-radius);//200;
 var y = getRandomInt(0+radius, canvas_height-radius);//200;
+
+var circles = []
+for( i = 1; i < 150; i++ ){
+  x = getRandomInt(0+radius, canvas_width-radius);
+  y = getRandomInt(0+radius, canvas_height-radius);
+  dx = getRandomInt(1,8);
+  dy = getRandomInt(1,8);
+  circles.push(new Circle(x, y, radius, dx, dy))
+}
+
+var animationGeneration = 0
 
 var circle = new Circle(x, y, radius, dx, dy)
 function animate() {
   requestAnimationFrame(animate);
   c.clearRect(0, 0, canvas_width, canvas_height)
-  circle.update()
+  //circle.update()
+  for( i = 1; i < circles.length; i++ ){
+    circles[i].update()
+  }
+  animationGeneration++;
+  if (animationGeneration - 10 >= 0) {
+    animationGeneration = 0
+    for( i = 1; i < circles.length; i++ ){
+      circles[i].radius = circles[i].radius + getRandomInt(-1,2)
+      circles[i].dx = circles[i].dx + getRandomInt(-1,2)
+      circles[i].dy = circles[i].dy + getRandomInt(-1,2)
+    }    
+     
+  }
 }
 
 animate()
