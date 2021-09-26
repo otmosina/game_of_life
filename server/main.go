@@ -1,103 +1,100 @@
 package main
 
 import (
-	"errors"
+	"encoding/json"
 	"fmt"
-	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"regexp"
+	"sort"
+	"strconv"
+	"strings"
 )
 
-type Page struct {
-	Title string
-	Body  []byte
+type byGeneratonsCnt []string
+
+func (s byGeneratonsCnt) Len() int {
+	return len(s)
 }
 
-func (p *Page) save() error {
-	filename := p.Title // + ".txt"
-	return ioutil.WriteFile(filename, p.Body, 0600)
+func (s byGeneratonsCnt) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
 }
 
-func loadPage(title string) (*Page, error) {
-	filename := title
-	body, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return nil, err
+func (s byGeneratonsCnt) Less(i, j int) bool {
+	name_i := strings.Split(s[i], "___")
+	genCnt_i, _ := strconv.Atoi(name_i[len(name_i)-1])
+
+	name_j := strings.Split(s[j], "___")
+	genCnt_j, _ := strconv.Atoi(name_j[len(name_j)-1])
+	return genCnt_i > genCnt_j
+}
+
+func gameHandler(w http.ResponseWriter, r *http.Request) {
+	file, _ := ioutil.ReadFile("../frontend/index.html")
+	fmt.Fprint(w, string(file))
+}
+
+func canvasHandler(w http.ResponseWriter, r *http.Request) {
+	file, _ := ioutil.ReadFile("../frontend/canvas.js")
+	fmt.Fprint(w, string(file))
+}
+
+func getGenerationList() []string {
+
+	fmt.Println("HEY...")
+	var filenames []string
+	infos, _ := ioutil.ReadDir(storageDir)
+	//fmt.Println(infos)
+	for _, info := range infos {
+		filenames = append(filenames, info.Name())
 	}
-	return &Page{Title: title, Body: body}, err
+	sort.Sort(byGeneratonsCnt(filenames))
+	//sort.Reverse(filenames)
+	return filenames
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hey, place for %s", r.URL.Path[1:])
-}
+type gameType [][][]uint8
 
-func h1(text string) string {
-	return fmt.Sprintf("<h1>%s</h1><br>", text)
+// [
+// 	[
+// 		[],
+// 		[],
+// 	]
+// ]
 
-}
+var byt = []byte(`[[[1,2],[3,4]]]`)
 
-func viewHandler(w http.ResponseWriter, r *http.Request, title string) {
-	p, err := loadPage(title)
-	if err != nil {
-		log.Println(err)
-		http.Redirect(w, r, "/edit/"+title, http.StatusTemporaryRedirect)
-		return
+func getGameDataHandler(w http.ResponseWriter, r *http.Request) {
+	generationsList := getGenerationList()
+	lastGame := generationsList[0]
+	//fmt.Println(lastGame)
+	gameData, _ := ioutil.ReadFile(storageDir + lastGame)
+
+	//fmt.Println(gameData)
+	var game gameType
+	if err := json.Unmarshal(gameData, &game); err != nil {
+		panic(err)
 	}
-	renderTemplate(w, "view", p)
+	w.Header().Set("Content-Type", "application/json")
+	encoder := json.NewEncoder(w) //.Encode(game)
+	encoder.Encode(game)
+	fmt.Println(game[0])
+
+	//strB, _ := json.Marshal(&game)
+	// fmt.Println(string(strB))
+
+	//fmt.Fprint(w, string(strB))
 }
 
-func editHandler(w http.ResponseWriter, r *http.Request, title string) {
-	p, err := loadPage(title)
-	if err != nil {
-		p = &Page{Title: title}
-	}
-	renderTemplate(w, "edit", p)
-}
-
-func saveHandler(w http.ResponseWriter, r *http.Request, title string) {
-	body := r.FormValue("body")
-	p := &Page{Title: title, Body: []byte(body)}
-	p.save()
-	http.Redirect(w, r, "/view/"+p.Title, http.StatusFound)
-}
-
-var templates = template.Must(template.ParseFiles("edit.html", "view.html"))
-var validPath = regexp.MustCompile("^/(edit|save|view)/([a-zA-Z0-9]+)$")
-
-func getTitle(w http.ResponseWriter, r *http.Request) (string, error) {
-	m := validPath.FindStringSubmatch(r.URL.Path)
-	if m == nil {
-		http.NotFound(w, r)
-		return "", errors.New("Invalid Page Title")
-	}
-	return m[2], nil
-}
-
-func renderTemplate(w http.ResponseWriter, tmplName string, p *Page) {
-	err := templates.ExecuteTemplate(w, tmplName+".html", p)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-}
-
-func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		title, err := getTitle(w, r)
-		if err != nil {
-			return
-		}
-		fn(w, r, title)
-	}
-}
+var storageDir = "../storage/"
 
 func main() {
-	fmt.Println("Loading server...")
-	http.HandleFunc("/view/", makeHandler(viewHandler))
-	http.HandleFunc("/edit/", makeHandler(editHandler))
-	http.HandleFunc("/save/", makeHandler(saveHandler))
-	http.HandleFunc("/", handler)
+	// fmt.Println(getGenerationList())
+	http.HandleFunc("/game/canvas.js", canvasHandler)
+	http.HandleFunc("/game/", gameHandler)
+	http.HandleFunc("/get_game_data/", getGameDataHandler)
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8888", nil))
+
 }
