@@ -67,7 +67,13 @@ func getGameDataHandler(w http.ResponseWriter, r *http.Request) {
 
 	lastGame := generationsList[0]
 	// handle out of slice error
-	generationsList = generationsList[1:]
+	// Бесконечно перезапрашиваем лист, нужно добавить логики
+	if len(generationsList) > 0 {
+		generationsList = generationsList[1:]
+	} else {
+		generationsList = getGenerationList()
+	}
+
 	//fmt.Println(lastGame)
 	gameData, _ := ioutil.ReadFile(storageDir + lastGame)
 
