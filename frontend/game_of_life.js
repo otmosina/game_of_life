@@ -56,7 +56,6 @@ function randomUniverseGenerator(universeSize=50){
 var universeHistory = []//randomUniverseGenerator()
 
 var universeSize = 0//universeHistory[0].length
-console.log(universeSize)
 
 
 async function f2() {
@@ -86,7 +85,6 @@ f2();
 // }
 
 //}
-console.log(universeHistory)
 
 // while (universeHistory == 0) {
 //   console.log('waiting')
@@ -117,7 +115,6 @@ function loop(singlegeneration){
       c.rect(x, y, cellSize, cellSize);
       c.strokeStyle = `grey`
       if (singlegeneration[i][j] == 1) {
-        console.log(`black`);
         
         c.fillStyle = `black`
         random_r = getRandomInt(0, 255);
@@ -126,7 +123,6 @@ function loop(singlegeneration){
 
         c.fillStyle = `rgba(${random_r}, ${random_g}, ${random_b}, 0.5)`
       } else {
-        console.log(`white`);
         c.fillStyle = `white`
       }
       c.stroke();
@@ -143,10 +139,10 @@ function animate() {
   //debugger
   if (universeHistory.length > 0) {
     requestAnimationFrame(animate);
-    console.log(universeHistory.length)
     loop(universeHistory.shift())
   } else {
     cancelAnimationFrame(animate);
+    getUniverseHistory()
   }
   
 
@@ -155,16 +151,16 @@ function animate() {
 
 var filename = '2021-09-22-21-09-41___140'//'2021-09-22-21-09-35___314' //2021-08-17-22-08-18___196
 async function getUniverseHistory(){
-  await fetch(`../storage/${filename}`)
+  //await fetch(`../storage/${filename}`)
+  await fetch(`http://localhost:8888/get_game_data/#`)
   .then(response => response.json())
   .then(jsonResponse => {
     universeHistory = jsonResponse
-    console.log(universeHistory)
+    console.log(universeHistory.length)
     jsonResponse
     animate()
   })  
 }
-
 getUniverseHistory()
 
 
