@@ -40,6 +40,11 @@ func canvasHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(file))
 }
 
+func gameOfLifeHandler(w http.ResponseWriter, r *http.Request) {
+	file, _ := ioutil.ReadFile("../frontend/game_of_life.js")
+	fmt.Fprint(w, string(file))
+}
+
 func getGenerationList() []string {
 
 	fmt.Println("HEY...")
@@ -54,20 +59,15 @@ func getGenerationList() []string {
 	return filenames
 }
 
-type gameType [][][]uint8
+type gameType [][][]int
 
-// [
-// 	[
-// 		[],
-// 		[],
-// 	]
-// ]
-
-var byt = []byte(`[[[1,2],[3,4]]]`)
+var generationsList []string
 
 func getGameDataHandler(w http.ResponseWriter, r *http.Request) {
-	generationsList := getGenerationList()
+
 	lastGame := generationsList[0]
+	// handle out of slice error
+	generationsList = generationsList[1:]
 	//fmt.Println(lastGame)
 	gameData, _ := ioutil.ReadFile(storageDir + lastGame)
 
@@ -77,21 +77,17 @@ func getGameDataHandler(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	w.Header().Set("Content-Type", "application/json")
-	encoder := json.NewEncoder(w) //.Encode(game)
-	encoder.Encode(game)
-	fmt.Println(game[0])
+	json.NewEncoder(w).Encode(game)
 
-	//strB, _ := json.Marshal(&game)
-	// fmt.Println(string(strB))
-
-	//fmt.Fprint(w, string(strB))
 }
 
 var storageDir = "../storage/"
 
 func main() {
 	// fmt.Println(getGenerationList())
+	generationsList = getGenerationList()
 	http.HandleFunc("/game/canvas.js", canvasHandler)
+	http.HandleFunc("/game/game_of_life.js", gameOfLifeHandler)
 	http.HandleFunc("/game/", gameHandler)
 	http.HandleFunc("/get_game_data/", getGameDataHandler)
 
